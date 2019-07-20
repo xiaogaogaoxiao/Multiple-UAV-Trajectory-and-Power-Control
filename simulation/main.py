@@ -5,6 +5,8 @@ import math
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
+h_min = 100
+h_max = 200
 UAV_num = 5
 dim = 3
 sample_num = 30  # count of time slots
@@ -84,7 +86,7 @@ def cvx_problem_23(a_r, q_r, p_r, d, I):
     """
     a = [cp.Variable(1, UAV_num)] * sample_num
     q = [cp.Variable((dim, UAV_num))] * sample_num
-    obj_func = 0
+    obj_func = []
     for n in range(sample_num):
         for k in range(UAV_num):
             term1 = 1
@@ -92,20 +94,22 @@ def cvx_problem_23(a_r, q_r, p_r, d, I):
                 term1 += y * (2 * a_r[n][j]) / d[n][j][k] - p_r[n][j] * (cp.norm(q[n][j] - s[k]) ** 2) / (
                         d[n][j][k] ** 2)
 
-            obj_func += cp.log(term1)
-            obj_func -= cp.log(I[n][k] + 1) + I[n][k] / (1 + I[n][k])
+            obj_func.append(cp.log(term1))
+            obj_func.append(-1 * cp.log(I[n][k] + 1) + I[n][k] / (1 + I[n][k]))
 
             term2 = 0
             for j in range(UAV_num):
                 if j != k:
                     j += cp.square(a[n][j]) / (
                             d[n][j][k] + 2 * np.transpose((q_r[n][j] - s[k])) * (q[n][j] - q_r[n][j]))
-            obj_func -= term2 * y / (1 + I[n][k])
+            obj_func.append(-1 * term2 * y / (1 + I[n][k]))
 
     # TODO: add constraints
     constr = []
+    for n in range(sample_num):
+        pass
 
-    prob = cp.Problem(cp.Maximize(obj_func))
+    prob = cp.Problem(cp.Maximize(cp.sum(obj_func)))
     prob.solve()
 
     return a, q
@@ -172,8 +176,10 @@ def tpc_algorithm(q_0, p_0):
 def main():
     # TODO: initialization of p, q vector
     # TODO(2): initialization of base stations
-    pass
-
+    bss = np.array([[20, 30, 0], [30, 35, 0], [10, 15, 0], [2, 10, 0]])
+    pi = np.array([[0, 20, 100], [20, 0, 100], [20, 40, 100], [40, 20, 100]])
+    q = np.random.randn()
+    
 
 if __name__ == '__main__':
     main()
