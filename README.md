@@ -41,7 +41,7 @@ Root
 
 #### Theoretical Analysis
 
-see [docs](https://github.com/Vito-Swift/EIE3280-CourseProj-TPC/tree/master/doc) and also a [paper](https://arxiv.org/pdf/1809.05697.pdf) on optimization research by C. Shen, T.H. Chang, et al.
+You can see our theoretical analysis in [docs](https://github.com/Vito-Swift/EIE3280-CourseProj-TPC/tree/master/doc) and one can also refer to a [paper](https://arxiv.org/pdf/1809.05697.pdf) on optimization research by C. Shen, T.H. Chang, et al.
 
 #### Simulation Result
 
