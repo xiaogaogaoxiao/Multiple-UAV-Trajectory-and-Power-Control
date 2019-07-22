@@ -1,9 +1,10 @@
-\documentclass[handout,11.5pt]{beamer}
+\documentclass[11.5pt]{beamer}
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
 \usepackage{algorithm,setspace}
 \usepackage{algpseudocode}
 \usepackage{caption}
+\usepackage{hyperref} 
 
 \renewcommand{\algorithmicrequire}{\textbf{Input:}} 
 \renewcommand{\algorithmicensure}{\textbf{Output:}} 
@@ -31,20 +32,190 @@
 \section{Introduction}
 \begin{frame}
 	\frametitle{Introduction}
-	Nowadays, UAVs are using widely in many areas.
+	\begin{figure}
+		\centering
+		\includegraphics[width=.9\linewidth]{Intro_figure.png}
+	\end{figure}
 \end{frame}
+
+
+\begin{frame}
+	\frametitle{Introduction}
+	\begin{itemize}\itemsep4em
+		\item<1-> Practical constraints
+		\begin{itemize}
+			\item Transmission interference
+			\item Limited speed and altitude
+			\item Collision
+		\end{itemize}
+		\item<2-> TPC Problem
+		\begin{itemize}
+			\item Joint trajectory optimizaiton
+			\item Power control
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
 
 \section{Problem Formulation}
 \begin{frame}
 	\frametitle{Problem Formulation}
-	To formulate this problem mathematically, we 
+	\begin{itemize}\itemsep4em
+		\item<1-> BS position
+		\begin{itemize}
+			\item Fixed base station (BS) position: $\boldsymbol{s}\in\mathbb{R}^{3\times K}$
+			\item $k$-th BS position: $\boldsymbol{s}[:,k]\in\mathbb{R}^3,\,\forall\,k\in\mathcal{K}$
+				, where $\mathcal{K}\triangleq\{1,\ldots,K\}$
+		\end{itemize}
+		\item<2-> UAV location
+		\begin{itemize}
+			\item UAV location: $\boldsymbol{q}\in\mathbb{R}^{3\times K\times (N+2)}$
+			\item $k$-th UAV at time slot $n$: $\boldsymbol{q}[:,k,n+1]\in\mathbb{R}^3$ for $n\in\mathcal{N}_1^N$
+				, where $\mathcal{N}_i^j=\{i,\ldots,j\}$
+			\item Initial location: $\boldsymbol{q}[:,k,1]$
+			\item Final location: $\boldsymbol{q}[:,k,N+2]$
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Problem Formulation}
+	\begin{itemize}\itemsep2em
+		\item<1-> Altitude constraint
+		\begin{itemize}
+			\item Minimum and maximum safe altitude for all UAV: $H_{\min}$ and $H_{\max}$
+			\item Altitude constraint: 
+				\begin{equation}\label{Eq1}
+					H_{\min}\leq\boldsymbol{q}[3,k,n+1]\leq H_{\max}
+				\end{equation}
+		\end{itemize}
+		\item<2-> Speed constraint
+		\begin{itemize}
+			\item Level-flight speed, vertical ascending and descending speed: $V_L,V_A$ and $V_D$
+			\item Position constraints:
+				\begin{subequations}
+					\begin{equation}\label{Eq2.1}
+						\left\lVert\boldsymbol{q}[1:2,k,n+1]-\boldsymbol{q}[1:2,k,n]\right\rVert\leq V_LT_s
+					\end{equation}
+					\begin{equation}\label{Eq2.2}
+						-V_DT_s\leq\boldsymbol{q}[3,k,n+1]-\boldsymbol{q}[3,k,n]\leq V_AT_s
+					\end{equation}
+				\end{subequations}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Problem Formulation}
+	\begin{itemize}\itemsep2em
+		\item<1-> Collision avoidance
+		\begin{itemize}
+			\item Minimum safety distance between any two UAVs: $d_{\min}$
+			\item Collision avoidance constraints:
+				\begin{equation}\label{Eq3}
+					\left\lVert\boldsymbol{q}[:,k,n+1]-\boldsymbol{q}[:,j,n+1]\right\rVert\geq d_{\min}
+				\end{equation}
+		\end{itemize}
+		\item<2-> Power constraint
+		\begin{itemize}
+			\item Transimission power of UAV: $\boldsymbol{p}\in\mathbb{R}^{k\times (N+2)}$
+			\item $k$-th UAV at time slot $n$: $\boldsymbol{p}[k,n+1]\in\mathbb{R}$
+			\item Maximum transimission power: $P_{\max}$
+			\item Power constraint:
+				\begin{equation}\label{Eq4}
+					0\leq \boldsymbol{p}[k,n+1]\leq P_{\max}
+				\end{equation}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Problem Formulation}
+	\begin{itemize}\itemsep4em
+		\item<1-> Objective function 
+		\begin{itemize}
+			\item Channel capacity (bits/second): $R\in\mathbb{R}^{K\times (N+2)}$
+			\item $k$-th UAV at time slot $n$: $R_{[k,n+1]}\in\mathbb{R}$, for $k\in\mathcal{K}$ and $n\in\mathcal{N}_1^N$
+			\item TPC optimization problem: 
+				\begin{equation} 
+					\begin{array}{cll}
+						\max\limits_{\substack{\boldsymbol{p}_{[:,2:N+1]},\\ \boldsymbol{q}_{[:,:,2:N+1]}}}\quad & 						\sum\limits_{n=2}^{N+1}\sum\limits_{k=1}^K R_{[k,n]}(\boldsymbol{p},\boldsymbol{q}) \\ 
+						s.t. \quad & (\ref{Eq1}),(\ref{Eq4})\ \forall\,k\in\mathcal{K},n\in\mathcal{N}_1^N \\
+						& (\ref{Eq2.1}),(\ref{Eq2.2}),\ \forall\,k\in\mathcal{K},n\in\mathcal{N}_1^{N+1} \\
+						& (\ref{Eq3}),\ \forall\,k,j\in\mathcal{K},k<j,n\in\mathcal{N}_1^N
+					\end{array}
+				\end{equation}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Problem Formulation}
+	\begin{itemize}\itemsep2em
+		\item<1-> $R_{[k,n]}$: Channel capacity
+		\begin{itemize}
+			\item Bandwidth of channel (Hz): $B$
+			\item Signal-to-noise ratio: SNR
+			\item Channel capacity:
+				\begin{equation}
+					R_{[k,n]} = B\log_2\left(1+\text{SNR}_{[k,n]}\right)\tag{5.1}
+				\end{equation}
+		\end{itemize}
+		\item<2-> SNR: Signal-to-noise ratio
+		\begin{itemize}
+			\item Channel gain: $G\in\mathbb{R}^{K\times K\times (N+2)}$
+			\item Power spectral density of AWGN: $N_0$
+			\item SNR:
+				 \begin{equation}\label{Eq5.2}
+					\text{SNR}_{[k,n]} = \frac{G_{[k,k,n]}\boldsymbol{p}_{[k,n]}}{BN_0+\sum_{j=1,j\ne k}^{K}    G_{[j,k,n]}\boldsymbol{p}_{[j,n]}}\tag{5.2}
+				 \end{equation}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Problem Formulation}
+	\begin{itemize}\itemsep4em
+		\item<1-> $G_{[k,k,n]}$: Power gain
+		\begin{itemize}
+			\item Channel gain beween UAV and BS: $G\in\mathbb{R}^{K\times K\times (N+2)}$
+			\item Channel gain between any UAV and BS at one meter: $G_0$
+			\item Channel gain between $j$-th UAV and $k$-th BS at time slot $n$:
+				\begin{equation}\label{Eq5.3}
+					G_{[j,k,n+1]}=\frac{G_0}{\lVert\boldsymbol{q}_{[:,j,n+1]}-\boldsymbol{s}_{[:,k]}\rVert^2} 	 						\tag{5.3}
+				\end{equation}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Problem Formulation}
+	\begin{itemize}\itemsep4em
+		\item<1-> Notice
+		\begin{itemize}
+			\item UAV should return to its initial position: 
+				\begin{equation}\label{6.1}
+					\boldsymbol{q}_{[:,k,1]} = \boldsymbol{q}_{[:,k,N+2]},\ \forall\,k\in\mathcal{K}\tag{6.1}
+				\end{equation}
+			\item Time slot short enough to avoid collision:
+				\begin{equation}\label{6.2}
+					T_s \leq \frac{d_{\min}}{\sqrt{4V_L^2+(V_A+V_D)^2}}\tag{6.2}
+				\end{equation}
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
 \section{Main Strategies}
 \begin{frame}
 	\frametitle{Main Strategies}
 	\begin{itemize}\itemsep4em
-		\item<1-> Two main problems
+		\item<1-> Two main difficulties
 		\begin{itemize}
 			\item Large problem dimension
 			\item Non-convex optimization
@@ -169,7 +340,7 @@
 
 \begin{frame}
 \frametitle{Main Strategies}
-Therefore, the convex approximation problem for (\ref{Eq11}) given $M$ is
+Therefore, the convex approximation problem for (\ref{reformulation2}) given $M$ is
 \begin{equation}\label{cvxapprox}
 	\begin{array}{cll}
 	\max\limits_{\substack{\boldsymbol{a}_{[:,2:M]},\\ \boldsymbol{q}_{[:,:,2:M]}}}\quad & \sum\limits_{n=2}^{M}\sum\limits_{k=1}^K \widetilde{R}_{[k,n]}(\boldsymbol{a},\boldsymbol{q};\boldsymbol{a}^r,\boldsymbol{q}^r) \\ 
@@ -209,13 +380,14 @@ Therefore, the convex approximation problem for (\ref{Eq11}) given $M$ is
 \section{Simulation Result}
 \begin{frame}
 	\frametitle{Simulation Result}
+	
 	\begin{itemize}
-		\item Simulation Scale
+		\item<1-> Simulation Scale
 		\begin{itemize}
 			\item \# of UAV-BS pairs: $K = 4$
 			\item \# of time slots: $M = 160$
 		\end{itemize}
-		\item Parameter Setup
+		\item<2-> Parameter Setup
 		\begin{itemize}
 			\item $d_{\text{min}} = 20 m$
 			\item $V_L = 20 m/s$, $V_A = V_D = 5 m/s$ 
@@ -224,19 +396,20 @@ Therefore, the convex approximation problem for (\ref{Eq11}) given $M$ is
 			\item Communication bandwidth: $B = 10 MHz$
 			\item Power spectral density of addictive white Gaussian noise: $N_0 = -160 dbm/Hz$
 		\end{itemize}
-		\item Initial locations
+		\item<3-> Initial locations
 		\begin{itemize}
 			\item UAV: (0, 0, 100), (30, 0, 100), (0, 30, 100), (30, 30, 100)
 			\item Base station: (300, 0, 0), (100, 600, 0), (700, 700, 0), (100, 800, 0)
 		\end{itemize}
 	\end{itemize}
+	\quad \quad \scriptsize Source Code: \href{https://github.com/Vito-Swift/EIE3280-CourseProj-TPC}{\underline{\textit{https://github.com/Vito-Swift/EIE3280-CourseProj-TPC}}}\\
 \end{frame}
 \begin{frame}
 	\frametitle{Simulation Result}
 	\begin{itemize}
 		\item Initial trajectory
 		\begin{itemize}
-			\item Step 1: obtain the hoovering points $q_{[:, k, M]}^*$ and the transmission powers $p_{[k, M]}^*$
+			\item Step 1: obtain the hovering points $q_{[:, k, M]}^*$ and the transmission powers $p_{[k, M]}^*$
 			\item Step 2: obtain $M^*$ and the initial trajectory $q_{[:, k, n]}^0$
 		\end{itemize}
 	\end{itemize}
@@ -276,10 +449,36 @@ Therefore, the convex approximation problem for (\ref{Eq11}) given $M$ is
 \section{Conclusion}
 \begin{frame}
 	\frametitle{Conclusion}
-	In conclusion, we 
+	\begin{itemize}\itemsep 2em
+		\item<1-> Generally, TPC problem is NP-hard and we apply an efficient SCA-based suboptimal algorithms to optimize the initial trajectory and power control.
+		\item<2-> From simulations,
+		\begin{itemize}
+			\item the aggregate transmission rate raised
+			\item UAV approaches $q^*$ in a more preferable route 
+			\begin{itemize}
+				\item shorter traveling duration
+				\item lower maximum height
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+\begin{frame}
+	\frametitle{Conclusion}
+	\begin{itemize}
+		\item Future Work
+		\begin{itemize}\itemsep 0.5em
+			\item Perform simulations in more sophisticated scenarios
+			\item Apply ADMM algorithm to modify our original algorithm, in order to reduce the computation overhead by using parallel computing
+			\item From one antenna to multiple antennas - extend the current work to scenarios with multi-antenna base stations and UAVs 
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
 \begin{frame}{References}
+	\nocite{IEEEexample:shen2018multi}
+	\nocite{IEEEexample:zeng2016wireless}
+	\nocite{IEEEexample:7888557}
+	\nocite{IEEEexample:li2019uav}
 	\bibliographystyle{IEEEtran}
 	\bibliography{IEEEabrv,IEEEexample}
 \end{frame}

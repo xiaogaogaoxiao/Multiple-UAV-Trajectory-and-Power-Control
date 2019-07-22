@@ -1,5 +1,0 @@
-\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
-\beamer@sectionintoc {2}{Problem Formulation}{4}{0}{2}
-\beamer@sectionintoc {3}{Main Strategies}{5}{0}{3}
-\beamer@sectionintoc {4}{Simulation Result}{14}{0}{4}
-\beamer@sectionintoc {5}{Conclusion}{18}{0}{5}
