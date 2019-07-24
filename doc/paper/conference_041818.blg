@@ -1,0 +1,27 @@
+This is 8-bit Big BibTeX version 0.99d
+Implementation:  C for Unix
+Release version: 3.71 (18 mar 2013)
+
+Error: cannot open CS file: 88591lat.csf
+The top-level auxiliary file: conference_041818.aux
+I couldn't open style file IEEEtran.bst
+---line 64 of file conference_041818.aux
+ : \bibstyle{IEEEtran
+ :                   }
+I'm skipping whatever remains of this command
+I couldn't open database file IEEEabrv.bib
+---line 65 of file conference_041818.aux
+ : \bibdata{IEEEabrv
+ :                  ,IEEEexample}
+I'm skipping whatever remains of this command
+I found no database files---while reading file conference_041818.aux
+I found no style file---while reading file conference_041818.aux
+
+Here's how much of BibTeX's memory you used:
+ Cites:                 5 out of 750
+ Fields:                0 out of 5000
+ Hash table:       100001 out of 100000
+ Strings:              93 out of 100000
+ Free string pool:    731 out of 65000
+ Wizard functions:      0 out of 3000
+(There were 4 error messages)
