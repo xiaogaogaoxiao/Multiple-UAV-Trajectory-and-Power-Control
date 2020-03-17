@@ -1,6 +1,6 @@
 ## Multiple UAV Trajectory and Power Control
 
-![](https:?/github.com/Vito-Swift/Multiple-UAV-Trajectory-and-Power-Control/doc/page.png)
+![](https://github.com/Vito-Swift/Multiple-UAV-Trajectory-and-Power-Control/raw/master/doc/page.png)
 
 Simulations and documentations of a multiple UAV trajectory and power control algorithm based on SCA algorithm. This TPC algorithm is proposed by an undergraduate student group in CUHK(SZ) and submitted as a course project in EIE3280, 2019 summer.
 
