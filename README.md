@@ -27,10 +27,10 @@ Root
 |    |
 |    +-- opt_trajectory.png          % plotting of the optimized trajectory
 +-- simulation
-|	 |
-|	 +-- init                        % automated scripts to generate initial trajectories
-|  |
-|  +-- *.py                        % primary simulation scripts
+|    |
+|	   +-- init                        % automated scripts to generate initial trajectories
+|    |
+|    +-- *.py                        % primary simulation scripts
 ```
 
 #### Python Package Requirements
