@@ -29,8 +29,8 @@ Root
 +-- simulation
 |	 |
 |	 +-- init                        % automated scripts to generate initial trajectories
-|    |
-|    +-- *.py                        % primary simulation scripts
+|  |
+|  +-- *.py                        % primary simulation scripts
 ```
 
 #### Python Package Requirements
